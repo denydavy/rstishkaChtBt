@@ -41,6 +41,87 @@ loader
 	.add("rocket", "assets/images/dinorocket.png")
 	.add("flame", "assets/images/fire.png")
 	.add("space_bg", "assets/images/bg-space.png")
+	.add("dino_0", "assets/images/dino_talk/speak_open0000.png")
+	.add("dino_1", "assets/images/dino_talk/speak_open0001.png")
+	.add("dino_2", "assets/images/dino_talk/speak_open0002.png")
+	.add("dino_3", "assets/images/dino_talk/speak_open0003.png")
+	.add("dino_4", "assets/images/dino_talk/speak_open0004.png")
+	.add("dino_5", "assets/images/dino_talk/speak_open0005.png")
+	.add("dino_6", "assets/images/dino_talk/speak_open0006.png")
+	.add("dino_7", "assets/images/dino_talk/speak_open0007.png")
+	.add("dino_8", "assets/images/dino_talk/speak_open0008.png")
+	.add("dino_9", "assets/images/dino_talk/speak_open0009.png")
+	.add("dino_10", "assets/images/dino_talk/speak_open0010.png")
+	.add("dino_11", "assets/images/dino_talk/speak_close0011.png")
+	.add("dino_12", "assets/images/dino_talk/speak_close0012.png")
+	.add("dino_13", "assets/images/dino_talk/speak_close0013.png")
+	.add("dino_14", "assets/images/dino_talk/speak_close0014.png")
+	.add("dino_15", "assets/images/dino_talk/speak_open0015.png")
+	.add("dino_16", "assets/images/dino_talk/speak_open0016.png")
+	.add("dino_17", "assets/images/dino_talk/speak_open0017.png")
+	.add("dino_18", "assets/images/dino_talk/speak_open0018.png")
+	.add("dino_19", "assets/images/dino_talk/speak_open0019.png")
+	.add("dino_20", "assets/images/dino_talk/speak_open0020.png")
+	.add("dino_21", "assets/images/dino_talk/speak_close0021.png")
+	.add("dino_22", "assets/images/dino_talk/speak_close0022.png")
+	.add("dino_23", "assets/images/dino_talk/speak_close0023.png")
+	.add("dino_24", "assets/images/dino_talk/speak_close0024.png")
+	.add("dino_25", "assets/images/dino_talk/speak_open0025.png")
+	.add("dino_26", "assets/images/dino_talk/speak_open0026.png")
+	.add("dino_27", "assets/images/dino_talk/speak_open0027.png")
+	.add("dino_28", "assets/images/dino_talk/speak_open0028.png")
+	.add("dino_29", "assets/images/dino_talk/speak_open0029.png")
+	.add("dino_30", "assets/images/dino_talk/speak_open0030.png")
+	.add("dino_31", "assets/images/dino_talk/speak_open0031.png")
+	.add("dino_32", "assets/images/dino_talk/speak_open0032.png")
+	.add("dino_33", "assets/images/dino_talk/speak_open0033.png")
+	.add("dino_34", "assets/images/dino_talk/speak_open0034.png")
+	.add("dino_35", "assets/images/dino_talk/speak_open0035.png")
+	.add("dino_36", "assets/images/dino_talk/speak_open0036.png")
+	.add("dino_37", "assets/images/dino_talk/speak_open0037.png")
+	.add("dino_38", "assets/images/dino_talk/speak_open0038.png")
+	.add("dino_39", "assets/images/dino_talk/speak_open0039.png")
+	.add("dino_40", "assets/images/dino_talk/speak_open0040.png")
+	.add("dino_41", "assets/images/dino_talk/speak_close0041.png")
+	.add("dino_42", "assets/images/dino_talk/speak_close0042.png")
+	.add("dino_43", "assets/images/dino_talk/speak_close0043.png")
+	.add("dino_44", "assets/images/dino_talk/speak_close0044.png")
+	.add("dino_45", "assets/images/dino_talk/speak_open0045.png")
+	.add("dino_46", "assets/images/dino_talk/speak_open0046.png")
+	.add("dino_47", "assets/images/dino_talk/speak_open0047.png")
+	.add("dino_48", "assets/images/dino_talk/speak_open0048.png")
+	.add("dino_49", "assets/images/dino_talk/speak_open0049.png")
+	.add("dino_50", "assets/images/dino_talk/speak_open0050.png")
+	.add("dino_51", "assets/images/dino_talk/speak_close0051.png")
+	.add("dino_52", "assets/images/dino_talk/speak_close0052.png")
+	.add("dino_53", "assets/images/dino_talk/speak_close0053.png")
+	.add("dino_54", "assets/images/dino_talk/speak_close0054.png")
+	.add("dino_55", "assets/images/dino_talk/speak_open0055.png")
+	.add("dino_56", "assets/images/dino_talk/speak_open0056.png")
+	.add("dino_57", "assets/images/dino_talk/speak_open0057.png")
+	.add("dino_58", "assets/images/dino_talk/speak_open0058.png")
+	.add("dino_59", "assets/images/dino_talk/speak_open0059.png")
+	.add("dino_60", "assets/images/dino_talk/speak_open0060.png")
+	.add("dino_61", "assets/images/dino_talk/speak_close0061.png")
+	.add("dino_62", "assets/images/dino_talk/speak_close0062.png")
+	.add("dino_63", "assets/images/dino_talk/speak_close0063.png")
+	.add("dino_64", "assets/images/dino_talk/speak_close0064.png")
+	.add("dino_65", "assets/images/dino_talk/speak_open0065.png")
+	.add("dino_66", "assets/images/dino_talk/speak_open0066.png")
+	.add("dino_67", "assets/images/dino_talk/speak_open0067.png")
+	.add("dino_68", "assets/images/dino_talk/speak_open0068.png")
+	.add("dino_69", "assets/images/dino_talk/speak_open0069.png")
+	.add("dino_70", "assets/images/dino_talk/speak_open0070.png")
+	.add("dino_71", "assets/images/dino_talk/speak_open0071.png")
+	.add("dino_72", "assets/images/dino_talk/speak_open0072.png")
+	.add("dino_73", "assets/images/dino_talk/speak_open0073.png")
+	.add("dino_74", "assets/images/dino_talk/speak_open0074.png")
+	.add("dino_75", "assets/images/dino_talk/speak_open0075.png")
+	.add("dino_76", "assets/images/dino_talk/speak_open0076.png")
+	.add("dino_77", "assets/images/dino_talk/speak_open0077.png")
+	.add("dino_78", "assets/images/dino_talk/speak_open0078.png")
+	.add("dino_79", "assets/images/dino_talk/speak_open0079.png")
+	.add("dino_80", "assets/images/dino_talk/speak_open0080.png")
 	.load(loadFonts)
 	
 let app = new Application({
@@ -105,7 +186,7 @@ function setup(){
 	
 	speak_btn.position.set(0,HEIGHT-speak_btn.height);
 	monitor.position.set((WIDTH - monitor.width)/2, 12+bps);
-	voice_monitor.position.set(monitor.x, monitor.y + monitor.height + 5+bps);
+	voice_monitor.position.set(monitor.x, monitor.y + monitor.height -35 +bps );
 	speaker.position.set(voice_monitor.x + voice_monitor.width + 54*iphone5_coef - voice_monitor.children[1].width, voice_monitor.y + 12+bps);
 	l_arr.position.set(0, voice_monitor.y+voice_monitor.height + 5 + planet.children[1].height+bps);
 	r_arr.anchor.set(1,1);
@@ -124,6 +205,7 @@ function setup(){
 	r_arr.on("pointerdown", PlanetMng.next);
 	l_arr.on("pointerdown", PlanetMng.prev);
 	go_button.on("pointerdown", function(){
+		document.querySelector("#dino_sound").pause();
 		let final_cutscene = build_flight_animation(PlanetMng.get_current());
 		go_button.interactive = false;
 		speak_btn.interactive = false;
@@ -246,7 +328,9 @@ function build_flight_animation(planetObj){
 	rocketTml.to(rocket_group.position, 3,  {y:30, x:WIDTH/1.1, ease: Power4.easeIn},"-=1");
 	rocketTml.to(rocket_group, .4, {rotation: .5},"-=1.5")
 	rocketTml.to(rocket_group.skew, 1, {x: .1, y: -.1},"-=2.5")
-	rocketTml.to(rocket_group.scale, 2, {x:0,y:0.01,ease: Power2.easeOut},"-=2.7");
+	rocketTml.to(rocket_group.scale, 2, {x:0,y:0.01,ease: Power2.easeOut, onComplete: function(){
+		location.href = "https://brainrus.ru/"+planetObj.name_en;
+	}},"-=2.7");
 	
 	
 	wrapper.addChild(bg);
@@ -293,7 +377,7 @@ function build_popup(){
 	
 	submit_btn.interactive = true;
 	
-	submit_btn.on("pointerdown", function(){
+	submit_btn.on("tap", function(){
 		popup_wrapper.visible = false;
 		document.querySelector("#dino_sound").play();
 	});
@@ -375,27 +459,13 @@ function Planet () {
 	}
 }
 
-function build_header(){
-	let m_header_style = new PIXI.TextStyle({
-		fontFamily:"src",
-		fontSize: 24,
-		fill: "#081d4a"
-	});
-	let m_header = new PIXI.Text("ВЫБЕРИ ПЛАНЕТУ", m_header_style);
-	
-	app.stage.addChild(m_header);
-	m_header.position.set((WIDTH-m_header.width)/2, 12);
-	
-	return m_header;
-}
-
 function build_main_monitor(){
 	let monitor = new PIXI.Container();
 	let graphics = new Graphics();
 	let bg = new Sprite(loader.resources.bg_main.texture);
 	let frame = new Sprite(loader.resources.main_f.texture);	
 	let logo = new Sprite(loader.resources.logo.texture);
-	let dino = new Sprite(loader.resources.dino.texture);
+	let dino = new Sprite(loader.resources.dino_0.texture);
 	let overlay = new Sprite(loader.resources.overlay_m.texture);
 	let bl = new Sprite(loader.resources.ref_m.texture);
 	let txt_s = new PIXI.TextStyle({
@@ -405,6 +475,8 @@ function build_main_monitor(){
 	});
 	let txt = new PIXI.Text("ПРОИЗНЕСИ НАЗВАНИЕ ПЛАНЕТЫ", txt_s);
 	let txt_group = new PIXI.Container();
+	
+	let mask = new Graphics();
 	
 	frame.scale.set(.3,.3);
 	bg.scale.set(.6,.6);
@@ -416,7 +488,7 @@ function build_main_monitor(){
 	bg.position.set(10,6);
 	overlay.position.set(10,10);
 	logo.position.set(20,22);
-	dino.position.set(10,12);
+	dino.position.set(10,0);
 	bl.position.set(13,2);
 	graphics.beginFill(0x081d4a, .5);
 	graphics.drawRect(0,0,bg.width - 10, txt.height + 15);
@@ -433,9 +505,40 @@ function build_main_monitor(){
 	monitor.addChild(bl);
 	monitor.addChild(txt_group);
 	monitor.addChild(frame);
+	
+	mask.beginFill(0x000000,0);
+	mask.drawRect(0,0,monitor.width,monitor.height/1.2);
+	mask.endFill();
+	
+	monitor.addChild(mask);
+
 	app.stage.addChild(monitor);	
+	monitor.mask = mask;
+	var cur_frame = 0;
+	var ad = animated_dino();
+	
+	setInterval(function(){
+		ad.swap_src(dino);
+	},50);
 	
 	return monitor;
+}
+
+function animated_dino(){
+	var frame = 0;
+	
+	function get_frame(){	
+		frame = frame + 1 > 80 ? 0 : frame + 1;
+		return frame;
+	}
+	
+	function swap_src(o){
+		o.setTexture(loader.resources['dino_'+get_frame()].texture);
+	}
+	
+	return {
+		swap_src: swap_src
+	}
 }
 
 function build_voice_monitor(){
@@ -448,8 +551,7 @@ function build_voice_monitor(){
 	let bl = new Sprite(loader.resources.ref_s.texture);
 	let mask = new Graphics();
 		
-	wrapper.addChild(mask);
-	
+	wrapper.addChild(mask);	
 	
 	frame.scale.set(.3,.3);
 	bg.scale.set(.6,.6)
