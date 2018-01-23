@@ -8,7 +8,7 @@ Sprite = PIXI.Sprite,
 Graphics = PIXI.Graphics;
 
 loader
-	.add("go", "assets/images/go_btn.png")
+	.add("go", "assets/images/go_btn_2.png")
 	.add("arr", "assets/images/arr.png")
 	.add("dino", "assets/images/dino-3.svg")
 	.add("main_f", "assets/images/frame_main.png")
@@ -40,7 +40,7 @@ loader
 	.add("popup_submit_btn", "assets/images/popup_submit_btn.png")
 	.add("rocket", "assets/images/dinorocket.png")
 	.add("flame", "assets/images/fire.png")
-	.add("space_bg", "assets/images/space_bg.png")
+	.add("space_bg", "assets/images/bg-space.png")
 	.load(loadFonts)
 	
 let app = new Application({
@@ -72,7 +72,6 @@ function loadFonts(){
 }
 
 function setup(){
-	let header = build_header();
 	let monitor = build_main_monitor();
 	let voice_monitor = build_voice_monitor();
 	let speaker = build_speaker();
@@ -81,19 +80,42 @@ function setup(){
 	let PlanetMng = new Planet();
 	var planet = build_planet(PlanetMng.get_current());
 	let go_button = build_go_button();
+	let elems = [monitor,voice_monitor,speaker, planet];
+	let speak_btn = build_speak_btn();
 	let allow_sound_popup = build_popup();
+	let padding = 27;
+	let bps = 0;
+	let speakpop; 
+	let iphone5_coef = 1;
 	
-	monitor.position.set((WIDTH - monitor.width)/2, 12+header.height+12);
-	voice_monitor.position.set(monitor.x, monitor.y + monitor.height + 5);
-	speaker.position.set(voice_monitor.x + voice_monitor.width + 24, voice_monitor.y + 5);
-	l_arr.position.set(0, voice_monitor.y+voice_monitor.height + 12);
+	go_button.scale.set(.7);
+	if(WIDTH < 375 && HEIGHT < 600){
+		elems.forEach(function(t){
+			t.scale.set(.85);
+		});
+		l_arr.scale.set(.25);
+		r_arr.scale.set(.25);
+		allow_sound_popup.children[1].scale.set(.85);
+		allow_sound_popup.children[1].position.set((WIDTH - allow_sound_popup.children[1].width)/2,(HEIGHT - allow_sound_popup.children[1].height)/2);
+		go_button.scale.set(.5);
+		padding = 20;
+		bps = 0;
+		iphone5_coef = 1.5;
+	}
+	
+	speak_btn.position.set(0,HEIGHT-speak_btn.height);
+	monitor.position.set((WIDTH - monitor.width)/2, 12+bps);
+	voice_monitor.position.set(monitor.x, monitor.y + monitor.height + 5+bps);
+	speaker.position.set(voice_monitor.x + voice_monitor.width + 54*iphone5_coef - voice_monitor.children[1].width, voice_monitor.y + 12+bps);
+	l_arr.position.set(0, voice_monitor.y+voice_monitor.height + 5 + planet.children[1].height+bps);
 	r_arr.anchor.set(1,1);
 	r_arr.rotation = Math.PI;
-	r_arr.position.set(WIDTH - r_arr.width, voice_monitor.y+voice_monitor.height + 12);
-	planet.position.set((WIDTH - planet.width) / 2, voice_monitor.y + voice_monitor.height );
-	go_button.position.set((WIDTH - go_button.width)/2, HEIGHT - go_button.height);
+	r_arr.position.set(WIDTH - r_arr.width, voice_monitor.y+voice_monitor.height + 5 + planet.children[1].height+bps);
+	planet.position.set((WIDTH - planet.width) / 2, voice_monitor.y + voice_monitor.height +bps);
+	go_button.position.set((WIDTH - go_button.width)/2, (speak_btn.y + (planet.y+planet.height)) / 2 - padding);
 	
 	go_button.interactive = true;
+	speak_btn.interactive = true;
 	l_arr.interactive = true;
 	r_arr.interactive = true;
 
@@ -103,8 +125,88 @@ function setup(){
 	l_arr.on("pointerdown", PlanetMng.prev);
 	go_button.on("pointerdown", function(){
 		let final_cutscene = build_flight_animation(PlanetMng.get_current());
-		
+		go_button.interactive = false;
+		speak_btn.interactive = false;
+		l_arr.interactive = false;
+		r_arr.interactive = false;
 	});
+	
+	speak_btn.on("pointerdown", function(){
+		speakpop = build_speak_popup();
+		go_button.interactive = false;
+		speak_btn.interactive = false;
+		l_arr.interactive = false;
+		r_arr.interactive = false;
+		
+		setTimeout(function(){
+			app.stage.removeChild(speakpop);
+			go_button.interactive = true;
+			speak_btn.interactive = true;
+			l_arr.interactive = true;
+			r_arr.interactive = true;
+		},3000)
+	})
+	
+	
+}
+
+
+function draw_circle(x,y,r,f,a){
+	let c = new Graphics();
+	
+	c.beginFill(f,a)
+	c.drawCircle(x,y,r)
+	c.endFill();
+	
+	return c;
+}
+function build_speak_popup(){
+	let popup_wrapper = new PIXI.Container();
+	let button_wrapper = new PIXI.Container();
+	let balls_wrapper = new PIXI.Container();	
+	let rect = new PIXI.Graphics();
+	let btn_bg = new Sprite(loader.resources.popup_m_bg.texture);
+	let btn_text_style = new PIXI.TextStyle({
+		fontFamily:"src",
+		fontSize: 21,
+		fill: "#081d4a",
+		wordWrap: true,
+		wordWrapWidth: btn_bg.width/2 - 20,
+		align: "center"
+	});
+	let btn_text = new PIXI.Text("ПРОИЗНОСИ НАЗВАНИЕ ПЛАНЕТЫ", btn_text_style);
+	let tml = new TimelineMax({ repeat: -1});
+	let c1 = draw_circle(0,0,5,0x1761a4,1);
+	let c2 = draw_circle(20,0,5,0x1761a4,.5);
+	let c3 = draw_circle(40,0,5,0x1761a4,.1);
+	
+	balls_wrapper.addChild(c1);
+	balls_wrapper.addChild(c2);
+	balls_wrapper.addChild(c3);
+
+	
+	btn_bg.scale.set(.5,.5);
+	btn_text.anchor.set(0,0);
+	btn_bg.position.set(0,0);
+	btn_text.position.set((btn_bg.width - btn_text.width)/2, (btn_bg.height - btn_text.height)/2-10);
+	
+	button_wrapper.addChild(btn_bg);
+	button_wrapper.addChild(btn_text);
+
+	popup_wrapper.addChild(rect);
+	popup_wrapper.addChild(button_wrapper);
+	popup_wrapper.addChild(balls_wrapper);
+	button_wrapper.position.set((WIDTH - button_wrapper.width)/2, (HEIGHT-button_wrapper.height)/2);
+	balls_wrapper.position.set((WIDTH - button_wrapper.width)/2+button_wrapper.width/2-15, (HEIGHT-button_wrapper.height)/2 + button_wrapper.height/1.2-5);
+	rect.beginFill(0x000000, .5);
+	rect.drawRect(0,0,WIDTH, HEIGHT);
+	rect.endFill();
+	
+	
+	tml.staggerTo(balls_wrapper.children,.3, {y: -3},.2);
+	tml.staggerTo(balls_wrapper.children,.3, {y: 0},.2,"-=.2");
+	app.stage.addChild(popup_wrapper);
+	return popup_wrapper;
 	
 	
 }
@@ -117,32 +219,34 @@ function build_flight_animation(planetObj){
 	let rocket = new Sprite(loader.resources.rocket.texture);
 	let flame = new Sprite(loader.resources.flame.texture);
 	
-	
-	flame.scale.set(.4,.4);
-	rocket.scale.set(.4,.4);
+	flame.scale.set(.3,.3);
+	rocket.scale.set(.3,.3);
 	planet.scale.set(.4,.4);
 	planet.position.set((WIDTH - planet.width)/2, 40);
 	bg.scale.set(.4,.4)
 	bg.position.set(0,0);
-	
+	bg.scale.set(1.2);
 	rocket_group.addChild(flame);
 	rocket_group.addChild(rocket);
 	rocket_group.pivot.x = 1;
 	rocket_group.pivot.y = 0;
 	
 	flame.position.set((rocket_group.width - flame.width)/2,rocket_group.height-flame.height/2.5);
-	rocket_group.position.set(WIDTH - rocket_group.width, (HEIGHT - rocket_group.height)/2);
+	rocket_group.position.set(WIDTH - rocket_group.width, HEIGHT + rocket_group.height + 400);
 	
-	var flameTml = new TimelineMax({yoyo:true, repeat:-1});
+	let flameTml = new TimelineMax({yoyo:true, repeat:-1});
 	flameTml.to(flame.position, .4, {y:rocket_group.height-flame.height-10});
 	
 	flameTml.play();
 	
-	var rocketTml = new TimelineMax();
-	rocketTml.fromTo(rocket_group.position, 2, {x:(WIDTH - rocket_group.width)/2, y: rocket_group.height*1.5}, {x:(WIDTH - rocket_group.width)/2, y:120, ease: Power4.easeOut});
-	rocketTml.to(rocket_group.position, 3,  {y:100, x:WIDTH/1.1, ease: Power4.easeIn, delay: 2},"-=.3");
+	let rocketTml = new TimelineMax();
+	rocketTml.to(rocket_group.position, 2, {x:(WIDTH - rocket_group.width)/2, y:120, ease: Power4.easeOut});
+
+	rocketTml.to(rocket_group.position, 1, {y: 110},"-=.1"),
+	rocketTml.to(rocket_group.position, 3,  {y:30, x:WIDTH/1.1, ease: Power4.easeIn},"-=1");
 	rocketTml.to(rocket_group, .4, {rotation: .5},"-=1.5")
-	rocketTml.to(rocket_group.scale, 2, {x:0,y:0},"-=2.7");
+	rocketTml.to(rocket_group.skew, 1, {x: .1, y: -.1},"-=2.5")
+	rocketTml.to(rocket_group.scale, 2, {x:0,y:0.01,ease: Power2.easeOut},"-=2.7");
 	
 	
 	wrapper.addChild(bg);
@@ -255,11 +359,11 @@ function Planet () {
 	
 	function update_planet(){
 		let cur_planet = get_current();
-
+		let off = WIDTH < 375 && HEIGHT < 600 ? 17.5 : 0; 
+		
 		pl_group.children[0].setTexture(loader.resources[cur_planet.name_en].texture);
 		pl_group.children[1].setText(cur_planet.name_ru);
-		pl_group.children[1].position.set((pl_group.width - pl_group.children[1].width)/ 2, pl_group.children[0].y + pl_group.children[0].height);
-
+		pl_group.children[1].position.set((pl_group.width - pl_group.children[1].width)/ 2+off, 5);
 	}
 	
 	return {
@@ -287,12 +391,20 @@ function build_header(){
 
 function build_main_monitor(){
 	let monitor = new PIXI.Container();
+	let graphics = new Graphics();
 	let bg = new Sprite(loader.resources.bg_main.texture);
 	let frame = new Sprite(loader.resources.main_f.texture);	
 	let logo = new Sprite(loader.resources.logo.texture);
 	let dino = new Sprite(loader.resources.dino.texture);
 	let overlay = new Sprite(loader.resources.overlay_m.texture);
 	let bl = new Sprite(loader.resources.ref_m.texture);
+	let txt_s = new PIXI.TextStyle({
+		fontFamily: 'src',
+		fontSize: 18,
+		fill: "white"
+	});
+	let txt = new PIXI.Text("ПРОИЗНЕСИ НАЗВАНИЕ ПЛАНЕТЫ", txt_s);
+	let txt_group = new PIXI.Container();
 	
 	frame.scale.set(.3,.3);
 	bg.scale.set(.6,.6);
@@ -306,12 +418,20 @@ function build_main_monitor(){
 	logo.position.set(20,22);
 	dino.position.set(10,12);
 	bl.position.set(13,2);
+	graphics.beginFill(0x081d4a, .5);
+	graphics.drawRect(0,0,bg.width - 10, txt.height + 15);
+	graphics.endFill();
+	txt.position.set((graphics.width - txt.width)/2+8, (graphics.height - txt.height)/2);
+	txt_group.position.set(bg.x - 5, bg.y + bg.height - graphics.height)
 	
+	txt_group.addChild(graphics);
+	txt_group.addChild(txt);
 	monitor.addChild(bg);
 	monitor.addChild(logo);
 	monitor.addChild(dino);
 	monitor.addChild(overlay);
 	monitor.addChild(bl);
+	monitor.addChild(txt_group);
 	monitor.addChild(frame);
 	app.stage.addChild(monitor);	
 	
@@ -324,36 +444,54 @@ function build_voice_monitor(){
 	let frame = new Sprite(loader.resources.speech_f.texture);
 	let overlay = new Sprite(loader.resources.overlay_s.texture);
 	let lines = new Sprite(loader.resources.speech_lines.texture);
+	let lines2 = new Sprite(loader.resources.speech_lines.texture);
 	let bl = new Sprite(loader.resources.ref_s.texture);
+	let mask = new Graphics();
+		
+	wrapper.addChild(mask);
+	
 	
 	frame.scale.set(.3,.3);
 	bg.scale.set(.6,.6)
 	overlay.scale.set(.3,.3);
 	lines.scale.set(.3,.3);
+	lines2.scale.set(.3,.3);
 	bl.scale.set(.3,.3);
 	
 	bg.position.set(12,12);
 	lines.position.set(14,17);
+	lines2.position.set(lines.x-lines.width,lines.y);
 	overlay.position.set(12,14);
 	bl.position.set(13,15);
 	
 	wrapper.addChild(bg);
 	wrapper.addChild(lines);
+	wrapper.addChild(lines2);
 	wrapper.addChild(overlay);
 	wrapper.addChild(bl);
 	wrapper.addChild(frame);
+	
+	mask.beginFill(0x000000,0);
+	mask.drawRect(4,0,wrapper.width/2+15, wrapper.height);
+	mask.endFill()
 	app.stage.addChild(wrapper);
 	
+	wrapper.mask = mask;
+	let tml = new TimelineMax({repeat: -1});
+	tml.to(lines.position, 1, {x:lines.width});
+	tml.to(lines2.position, 1, {x:lines2.width/100},"-=1");
 	return wrapper;
 }
 
 function build_speaker(){
+	let wrapper = new PIXI.Container();
 	let speaker = new Sprite(loader.resources.speaker_holes.texture);
 	
 	speaker.scale.set(.3,.3);
 	
-	app.stage.addChild(speaker);
-	return speaker;
+	wrapper.addChild(speaker);
+	app.stage.addChild(wrapper);
+	return wrapper;
 }
 
 function build_arrow() {
@@ -371,25 +509,57 @@ function build_planet(planetObj){
 	let planet_txt_style = new PIXI.TextStyle({
 		fontFamily: 'src',
 		fontSize: 26,
-		fill: "#081d4a"
+		fill: "#081d4a",
+		align: "center"
 	})
 	let planet_txt = new PIXI.Text(planetObj.name_ru, planet_txt_style);
 
 	planet.scale.set(.3,.3);
 	container.addChild(planet);
 	container.addChild(planet_txt);
-	planet.position.set((container.width - planet.width)/2, 0);
-	planet_txt.position.set((container.width - planet_txt.width)/ 2, planet.y + planet.height);
-
+	planet_txt.position.set((container.width - planet_txt.width)/ 2, 5);
+	planet.position.set((container.width - planet.width)/2, planet_txt.y + planet_txt.height-5);
+	
 	app.stage.addChild(container);
 	return container;
 }
 
 function build_go_button(){
-	let go_button = new Sprite(loader.resources.go.texture);
+	let wrapper = new PIXI.Container();
+	let btn = new Sprite(loader.resources.go.texture)
+	let ts = new PIXI.TextStyle({
+		fontFamily: 'src',
+		fontSize: 32,
+		fill: "white",
+	})
+	let txt = new PIXI.Text("ПОЛЕТЕЛИ", ts);
+
+	wrapper.addChild(btn)
+	wrapper.addChild(txt);
 	
-	go_button.scale.set(.3,.3);
-	app.stage.addChild(go_button);
+	txt.position.set((wrapper.width - txt.width)/2,(wrapper.height - txt.height)/2);
+	app.stage.addChild(wrapper);
 	
-	return go_button;
+	return wrapper;
 }
+
+function build_speak_btn(){
+	let wrapper = new PIXI.Container();
+	let g = new Graphics();
+	let ts = new PIXI.TextStyle({
+		fontFamily: 'src',
+		fontSize: 32,
+		fill: "white",
+	})
+	let txt = new PIXI.Text("ГОВОРИ", ts);
+	
+	g.beginFill(0x1761a4,1);
+	g.drawRect(0,0,WIDTH,50);
+	
+	wrapper.addChild(g);
+	wrapper.addChild(txt);
+	app.stage.addChild(wrapper);
+	txt.position.set((wrapper.width - txt.width)/2,(wrapper.height - txt.height)/2);
+	return wrapper;
+}
+
