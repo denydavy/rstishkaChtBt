@@ -313,6 +313,8 @@ function build_flight_animation(planetObj){
         bg_wrapper.addChild(bg3);
 
         bg1.scale.set(2,2);
+        bg2.scale.set(2,2);
+        bg3.scale.set(2,2);
         bg2.position.set(0,0);
         bg3.position.set(0,0);
 
