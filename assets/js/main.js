@@ -312,9 +312,9 @@ function build_flight_animation(planetObj){
         bg_wrapper.addChild(bg2);
         bg_wrapper.addChild(bg3);
 
-        bg1.scale.set(2,2);
-        bg2.scale.set(2,2);
-        bg3.scale.set(2,2);
+        bg1.scale.set(3,3);
+        bg2.scale.set(3,3);
+        bg3.scale.set(3,3);
         bg2.position.set(0,0);
         bg3.position.set(0,0);
 
@@ -451,7 +451,7 @@ function Planet () {
 				name_en: "uranus",
 				name_ru: "УРАН"
 			}
-	]
+	];
 	
 	function prev(){
 		planet = planet - 1 < 0 ? pl_map.length - 1 : planet - 1;
@@ -526,7 +526,7 @@ function build_main_monitor(){
 	graphics.drawRect(0,0,bg.width - 10, txt.height + 15);
 	graphics.endFill();
 	txt.position.set((graphics.width - txt.width)/2+8, (graphics.height - txt.height)/2);
-	txt_group.position.set(bg.x - 5, bg.y + bg.height - graphics.height)
+	txt_group.position.set(bg.x - 5, bg.y + bg.height - graphics.height);
 	
 	txt_group.addChild(graphics);
 	txt_group.addChild(txt);
@@ -570,7 +570,7 @@ function animated_dino(){
 	
 	return {
 		swap_src: swap_src
-	}
+	};
 }
 
 function build_voice_monitor(){
@@ -586,7 +586,7 @@ function build_voice_monitor(){
 	wrapper.addChild(mask);	
 	
 	frame.scale.set(.3,.3);
-	bg.scale.set(.6,.6)
+	bg.scale.set(.6,.6);
 	overlay.scale.set(.3,.3);
 	lines.scale.set(.3,.3);
 	lines2.scale.set(.3,.3);
@@ -607,7 +607,7 @@ function build_voice_monitor(){
 	
 	mask.beginFill(0x000000,0);
 	mask.drawRect(4,0,wrapper.width/2+15, wrapper.height);
-	mask.endFill()
+	mask.endFill();
 	app.stage.addChild(wrapper);
 	
 	wrapper.mask = mask;
@@ -645,7 +645,7 @@ function build_planet(planetObj){
 		fontSize: 26,
 		fill: "#081d4a",
 		align: "center"
-	})
+	});
 	let planet_txt = new PIXI.Text(planetObj.name_ru, planet_txt_style);
 
 	planet.scale.set(.3,.3);
@@ -660,7 +660,7 @@ function build_planet(planetObj){
 
 function build_go_button(){
 	let wrapper = new PIXI.Container();
-	let btn = new Sprite(loader.resources.go.texture)
+	let btn = new Sprite(loader.resources.go.texture);
 	let ts = new PIXI.TextStyle({
 		fontFamily: 'src',
 		fontSize: 32,
@@ -668,7 +668,7 @@ function build_go_button(){
 	})
 	let txt = new PIXI.Text("ПОЛЕТЕЛИ", ts);
 
-	wrapper.addChild(btn)
+	wrapper.addChild(btn);
 	wrapper.addChild(txt);
 	
 	txt.position.set((wrapper.width - txt.width)/2,(wrapper.height - txt.height)/2);
