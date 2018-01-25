@@ -122,7 +122,10 @@ loader
 	.add("dino_78", "assets/images/dino_talk/speak_open0078.png")
 	.add("dino_79", "assets/images/dino_talk/speak_open0079.png")
 	.add("dino_80", "assets/images/dino_talk/speak_open0080.png")
-	.load(loadFonts)
+	.add("space_bg_1", "assets/images/bg_space_1.png")
+	.add("space_bg_2", "assets/images/bg_space_2.png")
+	.add("space_bg_3", "assets/images/bg_space_3.png")
+	.load(loadFonts);
 	
 let app = new Application({
 	width: WIDTH, 
@@ -226,8 +229,8 @@ function setup(){
 			speak_btn.interactive = true;
 			l_arr.interactive = true;
 			r_arr.interactive = true;
-		},3000)
-	})
+		},3000);
+	});
 	
 	
 }
@@ -236,8 +239,8 @@ function setup(){
 function draw_circle(x,y,r,f,a){
 	let c = new Graphics();
 	
-	c.beginFill(f,a)
-	c.drawCircle(x,y,r)
+	c.beginFill(f,a);
+	c.drawCircle(x,y,r);
 	c.endFill();
 	
 	return c;
@@ -295,19 +298,28 @@ function build_speak_popup(){
 
 function build_flight_animation(planetObj){
 	let wrapper = new PIXI.Container();
-	let bg = new Sprite(loader.resources.space_bg.texture);
+	let bg1 = new Sprite(loader.resources.space_bg_1.texture);
+        let bg2 = new Sprite(loader.resources.space_bg_2.texture);
+	let bg3 = new Sprite(loader.resources.space_bg_3.texture);
+        let bg_wrapper = new PIXI.Container();
+        
 	let planet = new Sprite(loader.resources[planetObj.name_en+'_with_glow'].texture);
 	let rocket_group = new PIXI.Container();
 	let rocket = new Sprite(loader.resources.rocket.texture);
 	let flame = new Sprite(loader.resources.flame.texture);
 	
-	flame.scale.set(.3,.3);
+        bg_wrapper.addChild(bg1);
+        bg_wrapper.addChild(bg2);
+        bg_wrapper.addChild(bg3);
+	
+        planet.anchor.set(.5,.5);
+        flame.scale.set(.3,.3);
 	rocket.scale.set(.3,.3);
-	planet.scale.set(.4,.4);
-	planet.position.set((WIDTH - planet.width)/2, 40);
-	bg.scale.set(.4,.4)
-	bg.position.set(0,0);
-	bg.scale.set(1.2);
+	planet.scale.set(.2,.2);
+           
+	planet.position.set(WIDTH - planet.width-25, 120);
+	bg_wrapper.position.set(0,0);
+        bg_wrapper.scale.set(.7);
 	rocket_group.addChild(flame);
 	rocket_group.addChild(rocket);
 	rocket_group.pivot.x = 1;
@@ -321,19 +333,31 @@ function build_flight_animation(planetObj){
 	
 	flameTml.play();
 	
-	let rocketTml = new TimelineMax();
-	rocketTml.to(rocket_group.position, 2, {x:(WIDTH - rocket_group.width)/2, y:120, ease: Power4.easeOut});
+        let bgTml = new TimelineMax({repeat: -1, paused: true});
+        bgTml.fromTo(bg_wrapper.children[2], 2,{y: -600},{y: 0,ease: Power0.easeNone});
+        bgTml.fromTo(bg_wrapper.children[1], 2,{y: -800},{y:0,ease: Power0.easeNone},"-=2");
+        bgTml.play(0);
 
-	rocketTml.to(rocket_group.position, 1, {y: 110},"-=.1"),
-	rocketTml.to(rocket_group.position, 3,  {y:30, x:WIDTH/1.1, ease: Power4.easeIn},"-=1");
-	rocketTml.to(rocket_group, .4, {rotation: .5},"-=1.5")
-	rocketTml.to(rocket_group.skew, 1, {x: .1, y: -.1},"-=2.5")
-	rocketTml.to(rocket_group.scale, 2, {x:0,y:0.01,ease: Power2.easeOut, onComplete: function(){
-		location.href = "https://brainrus.ru/"+planetObj.name_en;
-	}},"-=2.7");
+
+	let rocketTml = new TimelineMax();
+	rocketTml.to(rocket_group.position, 2, {x:(WIDTH - rocket_group.width)/2, y:220, ease: Power4.easeOut, 
+            onComplete: function(){
+//                rocketTml.pause();
+                rocketTml.to(planet.scale, 2, {x:0.4,y:0.4});
+
+                rocketTml.to(rocket_group.position, 1, {y: 110},"-=1"),
+                rocketTml.to(rocket_group.position, 3,  {y:10, x:WIDTH/1.1, ease: Power4.easeIn},"-=1");
+                rocketTml.to(rocket_group, .4, {rotation: .5},"-=1.5")
+                rocketTml.to(rocket_group.skew, 1, {x: .1, y: -.1},"-=2.5")
+                rocketTml.to(rocket_group.scale, 2, {x:0,y:0.01,ease: Power2.easeOut, onComplete: function(){
+                        location.href = "https://brainrus.ru/"+planetObj.name_en;
+                }},"-=2.7");
+        }});
+        
+
+//	
 	
-	
-	wrapper.addChild(bg);
+	wrapper.addChild(bg_wrapper);
 	wrapper.addChild(planet);
 	wrapper.addChild(rocket_group);
 	app.stage.addChild(wrapper);
