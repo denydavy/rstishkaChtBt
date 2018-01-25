@@ -311,7 +311,12 @@ function build_flight_animation(planetObj){
         bg_wrapper.addChild(bg1);
         bg_wrapper.addChild(bg2);
         bg_wrapper.addChild(bg3);
-	
+
+        bg1.scale.set(2,2);
+        bg2.position.set(0,0);
+        bg3.position.set(0,0);
+
+
         planet.anchor.set(.5,.5);
         flame.scale.set(.3,.3);
 	rocket.scale.set(.3,.3);
@@ -319,7 +324,7 @@ function build_flight_animation(planetObj){
            
 	planet.position.set(WIDTH - planet.width-25, 120);
 	bg_wrapper.position.set(0,0);
-        bg_wrapper.scale.set(.7);
+        bg_wrapper.scale.set(.3,.3);
 	rocket_group.addChild(flame);
 	rocket_group.addChild(rocket);
 	rocket_group.pivot.x = 1;
@@ -334,15 +339,16 @@ function build_flight_animation(planetObj){
 	flameTml.play();
 	
         let bgTml = new TimelineMax({repeat: -1, paused: true});
-        bgTml.fromTo(bg_wrapper.children[2], 2,{y: -600},{y: 0,ease: Power0.easeNone});
-        bgTml.fromTo(bg_wrapper.children[1], 2,{y: -800},{y:0,ease: Power0.easeNone},"-=2");
-        bgTml.play(0);
+        bgTml.fromTo(bg_wrapper.children[2], 4,{y: -1600},{y: 0,ease: Power0.easeNone});
+        bgTml.fromTo(bg_wrapper.children[1], 4,{y: -1800},{y:0,ease: Power0.easeNone},"-=4");
+        
 
 
 	let rocketTml = new TimelineMax();
 	rocketTml.to(rocket_group.position, 2, {x:(WIDTH - rocket_group.width)/2, y:220, ease: Power4.easeOut, 
             onComplete: function(){
 //                rocketTml.pause();
+                bgTml.play(0);
                 rocketTml.to(planet.scale, 2, {x:0.4,y:0.4});
 
                 rocketTml.to(rocket_group.position, 1, {y: 110},"-=1"),
