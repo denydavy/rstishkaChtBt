@@ -142,6 +142,14 @@ app.renderer.backgroundColor = 0xebebf5;
 
 document.body.appendChild(app.view);
 
+
+let audio = document.querySelector("#dino_sound");
+let sound = false;
+
+audio.addEventListener("ended", function(){
+    sound = false;
+});
+
 function loadFonts(){
 	// make sure fonts are loaded before we actually draw shit
 	 WebFont.load({
@@ -353,10 +361,10 @@ function build_flight_animation(planetObj){
                 bgTml.play(0);
                 rocketTml.to(planet.scale, 2, {x:0.4,y:0.4});
 
-                rocketTml.to(rocket_group.position, 1, {y: 110},"-=1"),
+                rocketTml.to(rocket_group.position, 1, {y: 110},"-=1");
                 rocketTml.to(rocket_group.position, 3,  {y:10, x:WIDTH/1.1, ease: Power4.easeIn},"-=1");
-                rocketTml.to(rocket_group, .4, {rotation: .5},"-=1.5")
-                rocketTml.to(rocket_group.skew, 1, {x: .1, y: -.1},"-=2.5")
+                rocketTml.to(rocket_group, .4, {rotation: .5},"-=1.5");
+                rocketTml.to(rocket_group.skew, 1, {x: .1, y: -.1},"-=2.5");
                 rocketTml.to(rocket_group.scale, 2, {x:0,y:0.01,ease: Power2.easeOut, onComplete: function(){
                         location.href = "https://brainrus.ru/"+planetObj.name_en;
                 }},"-=2.7");
@@ -385,7 +393,7 @@ function build_popup(){
 		wordWrapWidth: btn_bg.width/2 - 20,
 		align: "center"
 	});
-	let btn_text = new PIXI.Text("ВЫБЕРИ ПЛАНЕТУ КОТОРУЮ ТЫ ХОЧЕШЬ ПОСЕТИТЬ!", btn_text_style);
+	let btn_text = new PIXI.Text("ВЫБЕРИ ПЛАНЕТУ, КОТОРУЮ ТЫ ХОЧЕШЬ ПОСЕТИТЬ!", btn_text_style);
 	let submit_btn = new PIXI.Sprite(loader.resources.popup_submit_btn.texture);
 	
 	submit_btn.scale.set(.3,.3);
@@ -412,6 +420,7 @@ function build_popup(){
 	submit_btn.on("tap", function(){
 		popup_wrapper.visible = false;
 		document.querySelector("#dino_sound").play();
+                sound = true;
 	});
 	
 	app.stage.addChild(popup_wrapper);
@@ -488,7 +497,7 @@ function Planet () {
 		get_current: get_current,
 		update_planet: update_planet,
 		set_planet: set_planet
-	}
+	};
 }
 
 function build_main_monitor(){
@@ -550,7 +559,7 @@ function build_main_monitor(){
 	var ad = animated_dino();
 	
 	setInterval(function(){
-		ad.swap_src(dino);
+		if(sound) ad.swap_src(dino);
 	},50);
 	
 	return monitor;
