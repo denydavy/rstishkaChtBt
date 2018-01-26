@@ -577,7 +577,7 @@ function animated_dino(){
                 if(sound){
                     o.setTexture(loader.resources['dino_'+get_frame()].texture);
                 } else {
-                    if((frame+"").match(/(1|2|3|4)$/)){
+                    if((/(1|2|3|4)$/).test(frame+"")){
                         swap_src(o);
                     }
                 }
