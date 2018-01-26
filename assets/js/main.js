@@ -82,10 +82,10 @@ loader
 	.add("dino_38", "assets/images/dino_talk/speak_open0038.png")
 	.add("dino_39", "assets/images/dino_talk/speak_open0039.png")
 	.add("dino_40", "assets/images/dino_talk/speak_open0040.png")
-	.add("dino_41", "assets/images/dino_talk/speak_close0041.png")
-	.add("dino_42", "assets/images/dino_talk/speak_close0042.png")
-	.add("dino_43", "assets/images/dino_talk/speak_close0043.png")
-	.add("dino_44", "assets/images/dino_talk/speak_close0044.png")
+	.add("dino_41", "assets/images/dino_talk/speak_open0041.png")
+	.add("dino_42", "assets/images/dino_talk/speak_open0042.png")
+	.add("dino_43", "assets/images/dino_talk/speak_open0043.png")
+	.add("dino_44", "assets/images/dino_talk/speak_open0044.png")
 	.add("dino_45", "assets/images/dino_talk/speak_open0045.png")
 	.add("dino_46", "assets/images/dino_talk/speak_open0046.png")
 	.add("dino_47", "assets/images/dino_talk/speak_open0047.png")
@@ -555,11 +555,11 @@ function build_main_monitor(){
 
 	app.stage.addChild(monitor);	
 	monitor.mask = mask;
-	var cur_frame = 0;
-	var ad = animated_dino();
+	
+	let ad = animated_dino();
 	
 	setInterval(function(){
-		if(sound) ad.swap_src(dino);
+            ad.swap_src(dino);
 	},50);
 	
 	return monitor;
@@ -574,7 +574,10 @@ function animated_dino(){
 	}
 	
 	function swap_src(o){
-		o.setTexture(loader.resources['dino_'+get_frame()].texture);
+                if(sound){
+                    console.log(frame);
+                    o.setTexture(loader.resources['dino_'+get_frame()].texture);
+                }
 	}
 	
 	return {
