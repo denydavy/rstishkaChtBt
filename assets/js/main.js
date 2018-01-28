@@ -7,6 +7,11 @@ resources = PIXI.loader.resources,
 Sprite = PIXI.Sprite,
 Graphics = PIXI.Graphics;
 
+var isEdge = navigator.userAgent.indexOf('Edge') !== -1 && (!!navigator.msSaveOrOpenBlob || !!navigator.msSaveBlob);
+var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+var recorder; // globally accessible
+var microphone;
+
 loader
 	.add("go", "assets/images/go_btn_2.png")
 	.add("arr", "assets/images/arr.png")
@@ -123,9 +128,9 @@ loader
 	.add("dino_79", "assets/images/dino_talk/speak_open0079.png")
 	.add("dino_80", "assets/images/dino_talk/speak_open0080.png")
 	.load(loadFonts)
-	
+
 let app = new Application({
-	width: WIDTH, 
+	width: WIDTH,
 	height: HEIGHT,
 	antialias: true,
 	resolution:2
@@ -166,9 +171,9 @@ function setup(){
 	let allow_sound_popup = build_popup();
 	let padding = 27;
 	let bps = 0;
-	let speakpop; 
+	let speakpop;
 	let iphone5_coef = 1;
-	
+
 	go_button.scale.set(.7);
 	if(WIDTH < 375 && HEIGHT < 600){
 		elems.forEach(function(t){
@@ -183,7 +188,7 @@ function setup(){
 		bps = 0;
 		iphone5_coef = 1.5;
 	}
-	
+
 	speak_btn.position.set(0,HEIGHT-speak_btn.height);
 	monitor.position.set((WIDTH - monitor.width)/2, 12+bps);
 	voice_monitor.position.set(monitor.x, monitor.y + monitor.height -35 +bps );
@@ -194,14 +199,14 @@ function setup(){
 	r_arr.position.set(WIDTH - r_arr.width, voice_monitor.y+voice_monitor.height + 5 + planet.children[1].height+bps);
 	planet.position.set((WIDTH - planet.width) / 2, voice_monitor.y + voice_monitor.height +bps);
 	go_button.position.set((WIDTH - go_button.width)/2, (speak_btn.y + (planet.y+planet.height)) / 2 - padding);
-	
+
 	go_button.interactive = true;
 	speak_btn.interactive = true;
 	l_arr.interactive = true;
 	r_arr.interactive = true;
 
 	PlanetMng.set_planet(planet);
-	
+
 	r_arr.on("pointerdown", PlanetMng.next);
 	l_arr.on("pointerdown", PlanetMng.prev);
 	go_button.on("pointerdown", function(){
@@ -212,40 +217,43 @@ function setup(){
 		l_arr.interactive = false;
 		r_arr.interactive = false;
 	});
-	
+
 	speak_btn.on("pointerdown", function(){
 		speakpop = build_speak_popup();
 		go_button.interactive = false;
 		speak_btn.interactive = false;
 		l_arr.interactive = false;
 		r_arr.interactive = false;
-		
+		startRecording();
 		setTimeout(function(){
 			app.stage.removeChild(speakpop);
+			if (recorder){
+			recorder.stopRecording(stopRecordingCallback);
+			}
 			go_button.interactive = true;
 			speak_btn.interactive = true;
 			l_arr.interactive = true;
 			r_arr.interactive = true;
 		},3000)
 	})
-	
-	
+
+
 }
 
 
 function draw_circle(x,y,r,f,a){
 	let c = new Graphics();
-	
+
 	c.beginFill(f,a)
 	c.drawCircle(x,y,r)
 	c.endFill();
-	
+
 	return c;
 }
 function build_speak_popup(){
 	let popup_wrapper = new PIXI.Container();
 	let button_wrapper = new PIXI.Container();
-	let balls_wrapper = new PIXI.Container();	
+	let balls_wrapper = new PIXI.Container();
 	let rect = new PIXI.Graphics();
 	let btn_bg = new Sprite(loader.resources.popup_m_bg.texture);
 	let btn_text_style = new PIXI.TextStyle({
@@ -261,17 +269,17 @@ function build_speak_popup(){
 	let c1 = draw_circle(0,0,5,0x1761a4,1);
 	let c2 = draw_circle(20,0,5,0x1761a4,.5);
 	let c3 = draw_circle(40,0,5,0x1761a4,.1);
-	
+
 	balls_wrapper.addChild(c1);
 	balls_wrapper.addChild(c2);
 	balls_wrapper.addChild(c3);
 
-	
+
 	btn_bg.scale.set(.5,.5);
 	btn_text.anchor.set(0,0);
 	btn_bg.position.set(0,0);
 	btn_text.position.set((btn_bg.width - btn_text.width)/2, (btn_bg.height - btn_text.height)/2-10);
-	
+
 	button_wrapper.addChild(btn_bg);
 	button_wrapper.addChild(btn_text);
 
@@ -283,14 +291,14 @@ function build_speak_popup(){
 	rect.beginFill(0x000000, .5);
 	rect.drawRect(0,0,WIDTH, HEIGHT);
 	rect.endFill();
-	
-	
+
+
 	tml.staggerTo(balls_wrapper.children,.3, {y: -3},.2);
 	tml.staggerTo(balls_wrapper.children,.3, {y: 0},.2,"-=.2");
 	app.stage.addChild(popup_wrapper);
 	return popup_wrapper;
-	
-	
+
+
 }
 
 function build_flight_animation(planetObj){
@@ -300,7 +308,7 @@ function build_flight_animation(planetObj){
 	let rocket_group = new PIXI.Container();
 	let rocket = new Sprite(loader.resources.rocket.texture);
 	let flame = new Sprite(loader.resources.flame.texture);
-	
+
 	flame.scale.set(.3,.3);
 	rocket.scale.set(.3,.3);
 	planet.scale.set(.4,.4);
@@ -312,15 +320,15 @@ function build_flight_animation(planetObj){
 	rocket_group.addChild(rocket);
 	rocket_group.pivot.x = 1;
 	rocket_group.pivot.y = 0;
-	
+
 	flame.position.set((rocket_group.width - flame.width)/2,rocket_group.height-flame.height/2.5);
 	rocket_group.position.set(WIDTH - rocket_group.width, HEIGHT + rocket_group.height + 400);
-	
+
 	let flameTml = new TimelineMax({yoyo:true, repeat:-1});
 	flameTml.to(flame.position, .4, {y:rocket_group.height-flame.height-10});
-	
+
 	flameTml.play();
-	
+
 	let rocketTml = new TimelineMax();
 	rocketTml.to(rocket_group.position, 2, {x:(WIDTH - rocket_group.width)/2, y:120, ease: Power4.easeOut});
 
@@ -331,8 +339,8 @@ function build_flight_animation(planetObj){
 	rocketTml.to(rocket_group.scale, 2, {x:0,y:0.01,ease: Power2.easeOut, onComplete: function(){
 		location.href = "https://brainrus.ru/"+planetObj.name_en;
 	}},"-=2.7");
-	
-	
+
+
 	wrapper.addChild(bg);
 	wrapper.addChild(planet);
 	wrapper.addChild(rocket_group);
@@ -342,7 +350,7 @@ function build_flight_animation(planetObj){
 function build_popup(){
 	let popup_wrapper = new PIXI.Container();
 	let button_wrapper = new PIXI.Container();
-	
+
 	let rect = new PIXI.Graphics();
 	let btn_bg = new Sprite(loader.resources.popup_m_bg.texture);
 	let btn_text_style = new PIXI.TextStyle({
@@ -355,33 +363,33 @@ function build_popup(){
 	});
 	let btn_text = new PIXI.Text("ВЫБЕРИ ПЛАНЕТУ КОТОРУЮ ТЫ ХОЧЕШЬ ПОСЕТИТЬ!", btn_text_style);
 	let submit_btn = new PIXI.Sprite(loader.resources.popup_submit_btn.texture);
-	
+
 	submit_btn.scale.set(.3,.3);
 	btn_bg.scale.set(.6,.6);
 	btn_text.anchor.set(0,0);
 	btn_bg.position.set(0,0);
 	btn_text.position.set((btn_bg.width - btn_text.width)/2, (btn_bg.height - btn_text.height)/2);
 	submit_btn.position.set((btn_bg.width - submit_btn.width)/2,btn_bg.height-submit_btn.height/2);
-	
+
 	button_wrapper.addChild(btn_bg);
 	button_wrapper.addChild(btn_text);
 	button_wrapper.addChild(submit_btn);
 	popup_wrapper.addChild(rect);
 	popup_wrapper.addChild(button_wrapper);
-	
-	
+
+
 	button_wrapper.position.set((WIDTH - button_wrapper.width)/2, (HEIGHT-button_wrapper.height)/2);
 	rect.beginFill(0x000000, .5);
 	rect.drawRect(0,0,WIDTH, HEIGHT);
 	rect.endFill();
-	
+
 	submit_btn.interactive = true;
-	
+
 	submit_btn.on("tap", function(){
 		popup_wrapper.visible = false;
 		document.querySelector("#dino_sound").play();
 	});
-	
+
 	app.stage.addChild(popup_wrapper);
 	return popup_wrapper;
 }
@@ -420,36 +428,36 @@ function Planet () {
 				name_ru: "УРАН"
 			}
 	]
-	
+
 	function prev(){
 		planet = planet - 1 < 0 ? pl_map.length - 1 : planet - 1;
 		update_planet();
 		return pl_map[planet];
 	}
-	
+
 	function next(){
 		planet =  planet + 1 > pl_map.length -1  ? 0 : planet + 1;
 		update_planet();
 		return pl_map[planet];
 	}
-	
+
 	function get_current(){
 		return pl_map[planet];
 	}
-	
+
 	function set_planet(planet_obj){
 		pl_group = planet_obj;
 	}
-	
+
 	function update_planet(){
 		let cur_planet = get_current();
-		let off = WIDTH < 375 && HEIGHT < 600 ? 17.5 : 0; 
-		
+		let off = WIDTH < 375 && HEIGHT < 600 ? 17.5 : 0;
+
 		pl_group.children[0].setTexture(loader.resources[cur_planet.name_en].texture);
 		pl_group.children[1].setText(cur_planet.name_ru);
 		pl_group.children[1].position.set((pl_group.width - pl_group.children[1].width)/ 2+off, 5);
 	}
-	
+
 	return {
 		prev: prev,
 		next: next,
@@ -463,7 +471,7 @@ function build_main_monitor(){
 	let monitor = new PIXI.Container();
 	let graphics = new Graphics();
 	let bg = new Sprite(loader.resources.bg_main.texture);
-	let frame = new Sprite(loader.resources.main_f.texture);	
+	let frame = new Sprite(loader.resources.main_f.texture);
 	let logo = new Sprite(loader.resources.logo.texture);
 	let dino = new Sprite(loader.resources.dino_0.texture);
 	let overlay = new Sprite(loader.resources.overlay_m.texture);
@@ -475,16 +483,16 @@ function build_main_monitor(){
 	});
 	let txt = new PIXI.Text("ПРОИЗНЕСИ НАЗВАНИЕ ПЛАНЕТЫ", txt_s);
 	let txt_group = new PIXI.Container();
-	
+
 	let mask = new Graphics();
-	
+
 	frame.scale.set(.3,.3);
 	bg.scale.set(.6,.6);
 	logo.scale.set(.3,.3);
 	dino.scale.set(.6,.6);
 	overlay.scale.set(.3,.3);
 	bl.scale.set(.3,.3);
-	
+
 	bg.position.set(10,6);
 	overlay.position.set(10,10);
 	logo.position.set(20,22);
@@ -495,7 +503,7 @@ function build_main_monitor(){
 	graphics.endFill();
 	txt.position.set((graphics.width - txt.width)/2+8, (graphics.height - txt.height)/2);
 	txt_group.position.set(bg.x - 5, bg.y + bg.height - graphics.height)
-	
+
 	txt_group.addChild(graphics);
 	txt_group.addChild(txt);
 	monitor.addChild(bg);
@@ -505,37 +513,37 @@ function build_main_monitor(){
 	monitor.addChild(bl);
 	monitor.addChild(txt_group);
 	monitor.addChild(frame);
-	
+
 	mask.beginFill(0x000000,0);
 	mask.drawRect(0,0,monitor.width,monitor.height/1.2);
 	mask.endFill();
-	
+
 	monitor.addChild(mask);
 
-	app.stage.addChild(monitor);	
+	app.stage.addChild(monitor);
 	monitor.mask = mask;
 	var cur_frame = 0;
 	var ad = animated_dino();
-	
+
 	setInterval(function(){
 		ad.swap_src(dino);
 	},50);
-	
+
 	return monitor;
 }
 
 function animated_dino(){
 	var frame = 0;
-	
-	function get_frame(){	
+
+	function get_frame(){
 		frame = frame + 1 > 80 ? 0 : frame + 1;
 		return frame;
 	}
-	
+
 	function swap_src(o){
 		o.setTexture(loader.resources['dino_'+get_frame()].texture);
 	}
-	
+
 	return {
 		swap_src: swap_src
 	}
@@ -550,34 +558,34 @@ function build_voice_monitor(){
 	let lines2 = new Sprite(loader.resources.speech_lines.texture);
 	let bl = new Sprite(loader.resources.ref_s.texture);
 	let mask = new Graphics();
-		
-	wrapper.addChild(mask);	
-	
+
+	wrapper.addChild(mask);
+
 	frame.scale.set(.3,.3);
 	bg.scale.set(.6,.6)
 	overlay.scale.set(.3,.3);
 	lines.scale.set(.3,.3);
 	lines2.scale.set(.3,.3);
 	bl.scale.set(.3,.3);
-	
+
 	bg.position.set(12,12);
 	lines.position.set(14,17);
 	lines2.position.set(lines.x-lines.width,lines.y);
 	overlay.position.set(12,14);
 	bl.position.set(13,15);
-	
+
 	wrapper.addChild(bg);
 	wrapper.addChild(lines);
 	wrapper.addChild(lines2);
 	wrapper.addChild(overlay);
 	wrapper.addChild(bl);
 	wrapper.addChild(frame);
-	
+
 	mask.beginFill(0x000000,0);
 	mask.drawRect(4,0,wrapper.width/2+15, wrapper.height);
 	mask.endFill()
 	app.stage.addChild(wrapper);
-	
+
 	wrapper.mask = mask;
 	let tml = new TimelineMax({repeat: -1});
 	tml.to(lines.position, 1, {x:lines.width});
@@ -588,9 +596,9 @@ function build_voice_monitor(){
 function build_speaker(){
 	let wrapper = new PIXI.Container();
 	let speaker = new Sprite(loader.resources.speaker_holes.texture);
-	
+
 	speaker.scale.set(.3,.3);
-	
+
 	wrapper.addChild(speaker);
 	app.stage.addChild(wrapper);
 	return wrapper;
@@ -598,9 +606,9 @@ function build_speaker(){
 
 function build_arrow() {
 	var arr = new Sprite(loader.resources.arr.texture);
-	
+
 	arr.scale.set(.3, .3);
-	
+
 	app.stage.addChild(arr);
 	return arr;
 }
@@ -621,7 +629,7 @@ function build_planet(planetObj){
 	container.addChild(planet_txt);
 	planet_txt.position.set((container.width - planet_txt.width)/ 2, 5);
 	planet.position.set((container.width - planet.width)/2, planet_txt.y + planet_txt.height-5);
-	
+
 	app.stage.addChild(container);
 	return container;
 }
@@ -638,10 +646,10 @@ function build_go_button(){
 
 	wrapper.addChild(btn)
 	wrapper.addChild(txt);
-	
+
 	txt.position.set((wrapper.width - txt.width)/2,(wrapper.height - txt.height)/2);
 	app.stage.addChild(wrapper);
-	
+
 	return wrapper;
 }
 
@@ -654,10 +662,10 @@ function build_speak_btn(){
 		fill: "white",
 	})
 	let txt = new PIXI.Text("ГОВОРИ", ts);
-	
+
 	g.beginFill(0x1761a4,1);
 	g.drawRect(0,0,WIDTH,50);
-	
+
 	wrapper.addChild(g);
 	wrapper.addChild(txt);
 	app.stage.addChild(wrapper);
@@ -665,3 +673,119 @@ function build_speak_btn(){
 	return wrapper;
 }
 
+function startRecording() {
+    if (!microphone) {
+        captureMicrophone(function(mic) {
+            microphone = mic;
+            if(isSafari) {
+                // audio.muted = true;
+                // setSrcObject(microphone, audio);
+                // audio.play();
+                alert('Please click startRecording button again. First time we tried to access your microphone. Now we will record it.');
+                return;
+            }
+        });
+        return;
+    }
+    // audio.muted = true;
+    // setSrcObject(microphone, audio);
+    // audio.play();
+    var options = {
+        type: 'audio',
+				recorderType: StereoAudioRecorder,
+				desiredSampRate: 16000,
+        // numberOfAudioChannels: isEdge ? 1 : 2,
+        checkForInactiveTracks: true,
+        bufferSize: 16384
+    };
+    if(navigator.platform && navigator.platform.toString().toLowerCase().indexOf('win') === -1) {
+        options.sampleRate = 48000; // or 44100 or remove this line for default
+    }
+    if(recorder) {
+        recorder.destroy();
+        recorder = null;
+    }
+    recorder = RecordRTC(microphone, options);
+    recorder.startRecording();
+};
+
+function captureMicrophone(callback) {
+    if(microphone) {
+        callback(microphone);
+        return;
+    }
+    if(typeof navigator.mediaDevices === 'undefined' || !navigator.mediaDevices.getUserMedia) {
+        alert('This browser does not supports WebRTC getUserMedia API.');
+        if(!!navigator.getUserMedia) {
+            alert('This browser seems supporting deprecated getUserMedia API.');
+        }
+    }
+    navigator.mediaDevices.getUserMedia(
+			{
+        audio: isEdge ? true : {
+            echoCancellation: false
+        }
+    }
+	).then(function(mic) {
+        callback(mic);
+    }).catch(function(error) {
+        alert('Unable to capture your microphone. Please check console logs.');
+        console.error(error);
+    });
+}
+
+
+function getFileName(fileExtension) {
+    var d = new Date();
+    var year = d.getFullYear();
+    var month = d.getMonth();
+    var date = d.getDate();
+    return 'Record-' + year + month + date + '-' + getRandomString() + '.' + fileExtension;
+}
+
+
+function getRandomString() {
+    if (window.crypto && window.crypto.getRandomValues && navigator.userAgent.indexOf('Safari') === -1) {
+        var a = window.crypto.getRandomValues(new Uint32Array(3)),
+            token = '';
+        for (var i = 0, l = a.length; i < l; i++) {
+            token += a[i].toString(36);
+        }
+        return token;
+    } else {
+        return (Math.random() * new Date().getTime()).toString(36).replace(/\./g, '');
+    }
+}
+
+function stopRecordingCallback() {
+	if(!recorder || !recorder.getBlob()) return;
+
+
+	var blob = recorder.getBlob();
+	var file = new File([blob], getFileName('wav'), {
+		type: 'audio/wav'
+	});
+	// invokeSaveAsDialog(file)
+	sendToServer(file)
+}
+
+
+function sendToServer(file) {
+    var url = 'http://82.146.51.77:9999/upload';
+    var xhr = new XMLHttpRequest();
+    var fd = new FormData();
+		xhr.responseType = 'json';
+    xhr.open("POST", url, true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            // Every thing ok, file uploaded
+						resp = this.response
+            console.log(resp.text); // handle response.
+        } else if(xhr.readyState == 4){
+            // with some error
+            console.log(this.response);
+        }
+    };
+    fd.append("uploadfile", file);
+    xhr.send(fd);
+}
