@@ -87,10 +87,10 @@ loader
 	.add("dino_38", "assets/images/dino_talk/speak_open0038.png")
 	.add("dino_39", "assets/images/dino_talk/speak_open0039.png")
 	.add("dino_40", "assets/images/dino_talk/speak_open0040.png")
-	.add("dino_41", "assets/images/dino_talk/speak_close0041.png")
-	.add("dino_42", "assets/images/dino_talk/speak_close0042.png")
-	.add("dino_43", "assets/images/dino_talk/speak_close0043.png")
-	.add("dino_44", "assets/images/dino_talk/speak_close0044.png")
+	.add("dino_41", "assets/images/dino_talk/speak_open0041.png")
+	.add("dino_42", "assets/images/dino_talk/speak_open0042.png")
+	.add("dino_43", "assets/images/dino_talk/speak_open0043.png")
+	.add("dino_44", "assets/images/dino_talk/speak_open0044.png")
 	.add("dino_45", "assets/images/dino_talk/speak_open0045.png")
 	.add("dino_46", "assets/images/dino_talk/speak_open0046.png")
 	.add("dino_47", "assets/images/dino_talk/speak_open0047.png")
@@ -127,7 +127,10 @@ loader
 	.add("dino_78", "assets/images/dino_talk/speak_open0078.png")
 	.add("dino_79", "assets/images/dino_talk/speak_open0079.png")
 	.add("dino_80", "assets/images/dino_talk/speak_open0080.png")
-	.load(loadFonts)
+	.add("space_bg_1", "assets/images/bg_space_1.png")
+	.add("space_bg_2", "assets/images/bg_space_2.png")
+	.add("space_bg_3", "assets/images/bg_space_3.png")
+	.load(loadFonts);
 
 let app = new Application({
 	width: WIDTH,
@@ -143,6 +146,14 @@ app.renderer.resize(WIDTH, HEIGHT);
 app.renderer.backgroundColor = 0xebebf5;
 
 document.body.appendChild(app.view);
+
+
+let audio = document.querySelector("#dino_sound");
+let sound = false;
+
+audio.addEventListener("ended", function(){
+    sound = false;
+});
 
 function loadFonts(){
 	// make sure fonts are loaded before we actually draw shit
@@ -234,8 +245,8 @@ function setup(){
 			speak_btn.interactive = true;
 			l_arr.interactive = true;
 			r_arr.interactive = true;
-		},3000)
-	})
+		},3000);
+	});
 
 
 }
@@ -244,8 +255,8 @@ function setup(){
 function draw_circle(x,y,r,f,a){
 	let c = new Graphics();
 
-	c.beginFill(f,a)
-	c.drawCircle(x,y,r)
+	c.beginFill(f,a);
+	c.drawCircle(x,y,r);
 	c.endFill();
 
 	return c;
@@ -303,19 +314,35 @@ function build_speak_popup(){
 
 function build_flight_animation(planetObj){
 	let wrapper = new PIXI.Container();
-	let bg = new Sprite(loader.resources.space_bg.texture);
+	let bg1 = new Sprite(loader.resources.space_bg_1.texture);
+        let bg2 = new Sprite(loader.resources.space_bg_2.texture);
+	let bg3 = new Sprite(loader.resources.space_bg_3.texture);
+        let bg_wrapper = new PIXI.Container();
+
 	let planet = new Sprite(loader.resources[planetObj.name_en+'_with_glow'].texture);
 	let rocket_group = new PIXI.Container();
 	let rocket = new Sprite(loader.resources.rocket.texture);
 	let flame = new Sprite(loader.resources.flame.texture);
 
-	flame.scale.set(.3,.3);
+        bg_wrapper.addChild(bg1);
+        bg_wrapper.addChild(bg2);
+        bg_wrapper.addChild(bg3);
+
+        bg1.scale.set(3,3);
+        bg2.scale.set(3,3);
+        bg3.scale.set(3,3);
+        bg2.position.set(0,0);
+        bg3.position.set(0,0);
+
+
+        planet.anchor.set(.5,.5);
+        flame.scale.set(.3,.3);
 	rocket.scale.set(.3,.3);
-	planet.scale.set(.4,.4);
-	planet.position.set((WIDTH - planet.width)/2, 40);
-	bg.scale.set(.4,.4)
-	bg.position.set(0,0);
-	bg.scale.set(1.2);
+	planet.scale.set(.2,.2);
+
+	planet.position.set(WIDTH - planet.width-25, 120);
+	bg_wrapper.position.set(0,0);
+        bg_wrapper.scale.set(.3,.3);
 	rocket_group.addChild(flame);
 	rocket_group.addChild(rocket);
 	rocket_group.pivot.x = 1;
@@ -329,19 +356,32 @@ function build_flight_animation(planetObj){
 
 	flameTml.play();
 
+        let bgTml = new TimelineMax({repeat: -1, paused: true});
+        bgTml.fromTo(bg_wrapper.children[2], 4,{y: -1600},{y: 0,ease: Power0.easeNone});
+        bgTml.fromTo(bg_wrapper.children[1], 4,{y: -1800},{y:0,ease: Power0.easeNone},"-=4");
+
+
+
 	let rocketTml = new TimelineMax();
-	rocketTml.to(rocket_group.position, 2, {x:(WIDTH - rocket_group.width)/2, y:120, ease: Power4.easeOut});
+	rocketTml.to(rocket_group.position, 2, {x:(WIDTH - rocket_group.width)/2, y:220, ease: Power4.easeOut,
+            onComplete: function(){
+//                rocketTml.pause();
+                bgTml.play(0);
+                rocketTml.to(planet.scale, 2, {x:0.4,y:0.4});
 
-	rocketTml.to(rocket_group.position, 1, {y: 110},"-=.1"),
-	rocketTml.to(rocket_group.position, 3,  {y:30, x:WIDTH/1.1, ease: Power4.easeIn},"-=1");
-	rocketTml.to(rocket_group, .4, {rotation: .5},"-=1.5")
-	rocketTml.to(rocket_group.skew, 1, {x: .1, y: -.1},"-=2.5")
-	rocketTml.to(rocket_group.scale, 2, {x:0,y:0.01,ease: Power2.easeOut, onComplete: function(){
-		location.href = "https://brainrus.ru/"+planetObj.name_en;
-	}},"-=2.7");
+                rocketTml.to(rocket_group.position, 1, {y: 110},"-=1");
+                rocketTml.to(rocket_group.position, 3,  {y:10, x:WIDTH/1.1, ease: Power4.easeIn},"-=1");
+                rocketTml.to(rocket_group, .4, {rotation: .5},"-=1.5");
+                rocketTml.to(rocket_group.skew, 1, {x: .1, y: -.1},"-=2.5");
+                rocketTml.to(rocket_group.scale, 2, {x:0,y:0.01,ease: Power2.easeOut, onComplete: function(){
+                        location.href = "https://brainrus.ru/"+planetObj.name_en;
+                }},"-=2.7");
+        }});
 
 
-	wrapper.addChild(bg);
+//
+
+	wrapper.addChild(bg_wrapper);
 	wrapper.addChild(planet);
 	wrapper.addChild(rocket_group);
 	app.stage.addChild(wrapper);
@@ -361,7 +401,7 @@ function build_popup(){
 		wordWrapWidth: btn_bg.width/2 - 20,
 		align: "center"
 	});
-	let btn_text = new PIXI.Text("ВЫБЕРИ ПЛАНЕТУ КОТОРУЮ ТЫ ХОЧЕШЬ ПОСЕТИТЬ!", btn_text_style);
+	let btn_text = new PIXI.Text("ВЫБЕРИ ПЛАНЕТУ, КОТОРУЮ ТЫ ХОЧЕШЬ ПОСЕТИТЬ!", btn_text_style);
 	let submit_btn = new PIXI.Sprite(loader.resources.popup_submit_btn.texture);
 
 	submit_btn.scale.set(.3,.3);
@@ -388,6 +428,7 @@ function build_popup(){
 	submit_btn.on("tap", function(){
 		popup_wrapper.visible = false;
 		document.querySelector("#dino_sound").play();
+                sound = true;
 	});
 
 	app.stage.addChild(popup_wrapper);
@@ -427,7 +468,7 @@ function Planet () {
 				name_en: "uranus",
 				name_ru: "УРАН"
 			}
-	]
+	];
 
 	function prev(){
 		planet = planet - 1 < 0 ? pl_map.length - 1 : planet - 1;
@@ -464,7 +505,7 @@ function Planet () {
 		get_current: get_current,
 		update_planet: update_planet,
 		set_planet: set_planet
-	}
+	};
 }
 
 function build_main_monitor(){
@@ -502,7 +543,7 @@ function build_main_monitor(){
 	graphics.drawRect(0,0,bg.width - 10, txt.height + 15);
 	graphics.endFill();
 	txt.position.set((graphics.width - txt.width)/2+8, (graphics.height - txt.height)/2);
-	txt_group.position.set(bg.x - 5, bg.y + bg.height - graphics.height)
+	txt_group.position.set(bg.x - 5, bg.y + bg.height - graphics.height);
 
 	txt_group.addChild(graphics);
 	txt_group.addChild(txt);
@@ -522,11 +563,11 @@ function build_main_monitor(){
 
 	app.stage.addChild(monitor);
 	monitor.mask = mask;
-	var cur_frame = 0;
-	var ad = animated_dino();
+
+	let ad = animated_dino();
 
 	setInterval(function(){
-		ad.swap_src(dino);
+            ad.swap_src(dino);
 	},50);
 
 	return monitor;
@@ -541,12 +582,18 @@ function animated_dino(){
 	}
 
 	function swap_src(o){
-		o.setTexture(loader.resources['dino_'+get_frame()].texture);
+                if(sound){
+                    o.setTexture(loader.resources['dino_'+get_frame()].texture);
+                } else {
+                    if((/(1|2|3|4)$/).test(frame+"")){
+                        swap_src(o);
+                    }
+                }
 	}
 
 	return {
 		swap_src: swap_src
-	}
+	};
 }
 
 function build_voice_monitor(){
@@ -562,7 +609,7 @@ function build_voice_monitor(){
 	wrapper.addChild(mask);
 
 	frame.scale.set(.3,.3);
-	bg.scale.set(.6,.6)
+	bg.scale.set(.6,.6);
 	overlay.scale.set(.3,.3);
 	lines.scale.set(.3,.3);
 	lines2.scale.set(.3,.3);
@@ -583,7 +630,7 @@ function build_voice_monitor(){
 
 	mask.beginFill(0x000000,0);
 	mask.drawRect(4,0,wrapper.width/2+15, wrapper.height);
-	mask.endFill()
+	mask.endFill();
 	app.stage.addChild(wrapper);
 
 	wrapper.mask = mask;
@@ -621,7 +668,7 @@ function build_planet(planetObj){
 		fontSize: 26,
 		fill: "#081d4a",
 		align: "center"
-	})
+	});
 	let planet_txt = new PIXI.Text(planetObj.name_ru, planet_txt_style);
 
 	planet.scale.set(.3,.3);
@@ -636,7 +683,7 @@ function build_planet(planetObj){
 
 function build_go_button(){
 	let wrapper = new PIXI.Container();
-	let btn = new Sprite(loader.resources.go.texture)
+	let btn = new Sprite(loader.resources.go.texture);
 	let ts = new PIXI.TextStyle({
 		fontFamily: 'src',
 		fontSize: 32,
@@ -644,7 +691,7 @@ function build_go_button(){
 	})
 	let txt = new PIXI.Text("ПОЛЕТЕЛИ", ts);
 
-	wrapper.addChild(btn)
+	wrapper.addChild(btn);
 	wrapper.addChild(txt);
 
 	txt.position.set((wrapper.width - txt.width)/2,(wrapper.height - txt.height)/2);
