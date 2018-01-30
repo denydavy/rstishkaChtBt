@@ -931,7 +931,7 @@ function stopRecordingCallback() {
 
 function sendToServer(file) {
     return new Promise(function (resolve, reject) {
-        var url = 'https://speech.kotbot.ru';
+        var url = 'https://speech.kotbot.ru/upload';
         var xhr = new XMLHttpRequest();
         var fd = new FormData();
         xhr.withCredentials = true;
