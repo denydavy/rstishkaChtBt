@@ -190,11 +190,11 @@ function setup() {
         elems.forEach(function (t) {
             t.scale.set(.85);
         });
-        l_arr.scale.set(.25);
-        r_arr.scale.set(.25);
+        l_arr.scale.set(.2);
+        r_arr.scale.set(.2);
         allow_sound_popup.children[1].scale.set(.85);
         allow_sound_popup.children[1].position.set((WIDTH - allow_sound_popup.children[1].width) / 2, (HEIGHT - allow_sound_popup.children[1].height) / 2);
-        go_button.scale.set(.5);
+        go_button.scale.set(.3);
         padding = 20;
         bps = 0;
         iphone5_coef = 1.5;
@@ -202,8 +202,8 @@ function setup() {
 
     speak_btn.position.set(0, HEIGHT - speak_btn.height);
     monitor.position.set((WIDTH - monitor.width) / 2, 12 + bps);
-    voice_monitor.position.set(monitor.x, monitor.y + monitor.height - 35 + bps);
-    speaker.position.set(voice_monitor.x + voice_monitor.width + 54 * iphone5_coef - voice_monitor.children[1].width, voice_monitor.y + 12 + bps);
+    voice_monitor.position.set(monitor.x, monitor.y + monitor.height - 35 + bps );
+    speaker.position.set(voice_monitor.x + voice_monitor.width + 54 * iphone5_coef - voice_monitor.children[1].width , voice_monitor.y + 12 + bps);
     l_arr.position.set(0, voice_monitor.y + voice_monitor.height + 5 + planet.children[1].height + bps);
     r_arr.anchor.set(1, 1);
     r_arr.rotation = Math.PI;
@@ -230,7 +230,7 @@ function setup() {
         document.querySelector("#dino_sound").pause();
 
         build_flight_animation(PlanetMng.get_current());
-
+        location.href = "https://brainrus.ru/" + PlanetMng.get_current().name_en;
         go_button.interactive = false;
         speak_btn.interactive = false;
         l_arr.interactive = false;
@@ -238,6 +238,8 @@ function setup() {
     });
 
     speak_btn.on("pointerdown", function () {
+        document.querySelector("#dino_sound").pause();
+
         speakpop = build_speak_popup();
         go_button.interactive = false;
         speak_btn.interactive = false;
@@ -293,7 +295,8 @@ function transform_rec_text(rec_text) {
                 console.log(rec_text);
         }
         if (name_en !== '') {
-            build_flight_animation({name_en: name_en});
+            // build_flight_animation({name_en: name_en});
+            location.href = "https://brainrus.ru/" + name_en;
         } else {
             build_norec_popup();
             buttons.map(function (t) {
@@ -806,13 +809,13 @@ function build_speak_btn() {
     var g = new Graphics();
     var ts = new PIXI.TextStyle({
         fontFamily: 'src',
-        fontSize: 32,
+        fontSize: 18,
         fill: "white",
     });
     var txt = new PIXI.Text("ГОВОРИ", ts);
 
     g.beginFill(0x1761a4, 1);
-    g.drawRect(0, 0, WIDTH, 50);
+    g.drawRect(0, 0, WIDTH, 40);
 
     wrapper.addChild(g);
     wrapper.addChild(txt);
