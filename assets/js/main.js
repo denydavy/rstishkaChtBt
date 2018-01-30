@@ -934,6 +934,7 @@ function sendToServer(file) {
         var url = 'https://speech.kotbot.ru';
         var xhr = new XMLHttpRequest();
         var fd = new FormData();
+        xhr.withCredentials = true;
         xhr.responseType = 'json';
         xhr.open("POST", url, true);
         xhr.onreadystatechange = function () {
