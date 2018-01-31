@@ -229,7 +229,7 @@ function setup() {
     go_button.on("pointerdown", function () {
         document.querySelector("#dino_sound").pause();
 
-        build_flight_animation(PlanetMng.get_current());
+        // build_flight_animation(PlanetMng.get_current());
         location.href = "https://brainrus.ru/" + PlanetMng.get_current().name_en;
         go_button.interactive = false;
         speak_btn.interactive = false;
@@ -909,16 +909,24 @@ function getRandomString() {
 }
 
 function stopRecordingCallback() {
-    if (!recorder || !recorder.getBlob()) return;
+    if (!recorder) return;
 
 
-    var blob = recorder.getBlob();
-    var file = new File([blob], getFileName('wav'), {
-        type: 'audio/wav'
-    });
     // invokeSaveAsDialog(file)
     var rec_text = new Promise(function (resolve, reject) {
-        resolve(sendToServer(file));
+        if(isSafari) {
+            recorder.getDataURL(function(dataURL) {
+                //send to server
+                resolve(sendToServer(new File(dataURL, getFileName('wav'),{ type: 'audio/wav'})));
+            });
+        } else {
+            var blob = recorder.getBlob();
+            var file = new File([blob], getFileName('wav'), {
+                type: 'audio/wav'
+            });
+
+            resolve(sendToServer(file));
+        }
     }).then(
         function (res) {
             transform_rec_text(res);
