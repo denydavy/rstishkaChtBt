@@ -133,6 +133,7 @@
         .add("space_bg_1", "assets/images/bg_space_1.png")
         .add("space_bg_2", "assets/images/bg_space_2.png")
         .add("space_bg_3", "assets/images/bg_space_3.png")
+        .add("main_f_iphone", "assets/images/frame_iphone.png")
         .load(loadFonts);
 
     var app = new Application({
@@ -191,10 +192,10 @@
         go_button.scale.set(.7);
         if (WIDTH < 375 && HEIGHT < 600) {
             elems.forEach(function (t) {
-                t.scale.set(.85);
+                t.scale.set(.8);
             });
-            l_arr.scale.set(.2);
-            r_arr.scale.set(.2);
+            l_arr.scale.set(.1);
+            r_arr.scale.set(.1);
             allow_sound_popup.children[1].scale.set(.85);
             allow_sound_popup.children[1].position.set((WIDTH - allow_sound_popup.children[1].width) / 2, (HEIGHT - allow_sound_popup.children[1].height) / 2);
             go_button.scale.set(.3);
@@ -203,16 +204,21 @@
             iphone5_coef = 1.5;
         }
 
+        l_arr.scale.set(.25);
+        r_arr.scale.set(.25);
+        go_button.scale.set(.5);
+
+
         speak_btn.position.set(0, HEIGHT - speak_btn.height);
         monitor.position.set((WIDTH - monitor.width) / 2, 12 + bps);
-        voice_monitor.position.set(monitor.x, monitor.y + monitor.height - 35 + bps);
-        speaker.position.set(voice_monitor.x + voice_monitor.width + 54 * iphone5_coef - voice_monitor.children[1].width, voice_monitor.y + 12 + bps);
-        l_arr.position.set(0, voice_monitor.y + voice_monitor.height + 5 + planet.children[1].height + bps);
+        voice_monitor.position.set(monitor.x-2, monitor.y + monitor.height - 30 + bps);
+        speaker.position.set(voice_monitor.x + voice_monitor.width + 60 * iphone5_coef - voice_monitor.children[1].width, voice_monitor.y + 12 + bps);
+        l_arr.position.set(0, voice_monitor.y + voice_monitor.height + 5 + planet.children[1].height + 10);
         r_arr.anchor.set(1, 1);
         r_arr.rotation = Math.PI;
-        r_arr.position.set(WIDTH - r_arr.width, voice_monitor.y + voice_monitor.height + 5 + planet.children[1].height + bps);
+        r_arr.position.set(WIDTH - r_arr.width, voice_monitor.y + voice_monitor.height + 5 + planet.children[1].height + 10);
         planet.position.set((WIDTH - planet.width) / 2, voice_monitor.y + voice_monitor.height + bps);
-        go_button.position.set((WIDTH - go_button.width) / 2, (speak_btn.y + (planet.y + planet.height)) / 2 - padding);
+        go_button.position.set((WIDTH - go_button.width) / 2, (speak_btn.y + (planet.y + planet.height)) / 2 - 20);
 
         go_button.interactive = true;
         speak_btn.interactive = true;
@@ -619,7 +625,8 @@
         var monitor = new PIXI.Container();
         var graphics = new Graphics();
         var bg = new Sprite(loader.resources.bg_main.texture);
-        var frame = new Sprite(loader.resources.main_f.texture);
+        // var frame = new Sprite(loader.resources.main_f.texture);
+        var frame = new Sprite(loader.resources.main_f_iphone.texture);
         var logo = new Sprite(loader.resources.logo.texture);
         var dino = new Sprite(loader.resources.dino_0.texture);
         var overlay = new Sprite(loader.resources.overlay_m.texture);
@@ -635,16 +642,16 @@
         var mask = new Graphics();
 
         frame.scale.set(.3, .3);
-        bg.scale.set(.6, .6);
+        bg.scale.set(.6, .5);
         logo.scale.set(.3, .3);
-        dino.scale.set(.6, .6);
-        overlay.scale.set(.3, .3);
-        bl.scale.set(.3, .3);
+        dino.scale.set(.5, .5);
+        overlay.scale.set(.3, .25);
+        bl.scale.set(.32, .3);
 
         bg.position.set(10, 6);
         overlay.position.set(10, 10);
         logo.position.set(20, 22);
-        dino.position.set(10, 0);
+        dino.position.set(40, 0);
         bl.position.set(13, 2);
         graphics.beginFill(0x081d4a, .5);
         graphics.drawRect(0, 0, bg.width - 10, txt.height + 15);
@@ -663,7 +670,7 @@
         monitor.addChild(frame);
 
         mask.beginFill(0x000000, 0);
-        mask.drawRect(0, 0, monitor.width, monitor.height / 1.2);
+        mask.drawRect(0, 0, monitor.width, monitor.height / 1.18);
         mask.endFill();
 
         monitor.addChild(mask);
@@ -778,11 +785,11 @@
         });
         var planet_txt = new PIXI.Text(planetObj.name_ru, planet_txt_style);
 
-        planet.scale.set(.3, .3);
+        planet.scale.set(.25, .25);
         container.addChild(planet);
         container.addChild(planet_txt);
         planet_txt.position.set((container.width - planet_txt.width) / 2, 5);
-        planet.position.set((container.width - planet.width) / 2, planet_txt.y + planet_txt.height - 5);
+        planet.position.set((container.width - planet.width) / 2, planet_txt.y + planet_txt.height );
 
         app.stage.addChild(container);
         return container;
