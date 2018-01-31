@@ -154,6 +154,7 @@
     var audio = document.querySelector("#dino_sound");
     var sound = false;
     var buttons = [];
+    var pop_anchor;
 
     audio.addEventListener("ended", function () {
         sound = false;
@@ -254,9 +255,9 @@
             speak_btn.interactive = false;
             l_arr.interactive = false;
             r_arr.interactive = false;
+            pop_anchor = speakpop;
             startRecording();
             setTimeout(function () {
-                app.stage.removeChild(speakpop);
                 if (recorder) {
                     recorder.stopRecording(stopRecordingCallback);
                     go_button.interactive = false;
@@ -303,6 +304,9 @@
                 default:
                     console.log(rec_text);
             }
+
+            app.stage.removeChild(pop_anchor);
+
             if (name_en !== '') {
                 // build_flight_animation({name_en: name_en});
                 location.href = "https://brainrus.ru/" + name_en;
