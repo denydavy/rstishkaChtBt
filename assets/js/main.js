@@ -191,19 +191,19 @@
         var iphone5_coef = 1;
 
         go_button.scale.set(.7);
-        if (WIDTH < 375 && HEIGHT < 600) {
-            elems.forEach(function (t) {
-                t.scale.set(.8);
-            });
-            l_arr.scale.set(.1);
-            r_arr.scale.set(.1);
-            allow_sound_popup.children[1].scale.set(.85);
-            allow_sound_popup.children[1].position.set((WIDTH - allow_sound_popup.children[1].width) / 2, (HEIGHT - allow_sound_popup.children[1].height) / 2);
-            go_button.scale.set(.3);
-            padding = 20;
-            bps = 0;
-            iphone5_coef = 1.5;
-        }
+        // if (WIDTH < 375 && HEIGHT < 600) {
+        //     elems.forEach(function (t) {
+        //         t.scale.set(.8);
+        //     });
+        //     l_arr.scale.set(.1);
+        //     r_arr.scale.set(.1);
+        //     allow_sound_popup.children[1].scale.set(.85);
+        //     allow_sound_popup.children[1].position.set((WIDTH - allow_sound_popup.children[1].width) / 2, (HEIGHT - allow_sound_popup.children[1].height) / 2);
+        //     go_button.scale.set(.3);
+        //     padding = 20;
+        //     bps = 0;
+        //     iphone5_coef = 1.5;
+        // }
 
         l_arr.scale.set(.25);
         r_arr.scale.set(.25);
