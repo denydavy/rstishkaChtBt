@@ -188,6 +188,7 @@
         var bps = 0;
         var speakpop;
         var iphone5_coef = 1;
+        var speakBtn = document.querySelector('#speakBtn');
 
         go_button.scale.set(.7);
         if (WIDTH < 350) {
@@ -246,7 +247,7 @@
             r_arr.interactive = false;
         });
 
-        speak_btn.on("pointerdown", function () {
+        speakBtn.addEventListener("click", function () {
             document.querySelector("#dino_sound").pause();
 
             speakpop = build_speak_popup();
@@ -503,6 +504,7 @@
         submit_btn.on("tap", function () {
             popup_wrapper.visible = false;
             document.querySelector("#dino_sound").play();
+            document.querySelector("#speakBtn").classList.add('active');
             sound = true;
         });
 
@@ -842,7 +844,7 @@
 
         wrapper.addChild(bg);
         wrapper.addChild(txt);
-        app.stage.addChild(wrapper);
+        //app.stage.addChild(wrapper);
         txt.position.set((wrapper.width - txt.width) / 2, (wrapper.height - txt.height) / 2);
         return wrapper;
     }
