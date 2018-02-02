@@ -11,7 +11,6 @@
 
     var isEdge = navigator.userAgent.indexOf('Edge') !== -1 && (!!navigator.msSaveOrOpenBlob || !!navigator.msSaveBlob);
     var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    console.log(isSafari);
     var recorder; // globally accessible
     var microphone;
 
@@ -191,19 +190,19 @@
         var iphone5_coef = 1;
 
         go_button.scale.set(.7);
-        // if (WIDTH < 375 && HEIGHT < 600) {
-        //     elems.forEach(function (t) {
-        //         t.scale.set(.8);
-        //     });
-        //     l_arr.scale.set(.1);
-        //     r_arr.scale.set(.1);
-        //     allow_sound_popup.children[1].scale.set(.85);
-        //     allow_sound_popup.children[1].position.set((WIDTH - allow_sound_popup.children[1].width) / 2, (HEIGHT - allow_sound_popup.children[1].height) / 2);
-        //     go_button.scale.set(.3);
-        //     padding = 20;
-        //     bps = 0;
-        //     iphone5_coef = 1.5;
-        // }
+        if (WIDTH < 350) {
+            elems.forEach(function (t) {
+                t.scale.set(.8);
+            });
+            l_arr.scale.set(.1);
+            r_arr.scale.set(.1);
+            allow_sound_popup.children[1].scale.set(.85);
+            allow_sound_popup.children[1].position.set((WIDTH - allow_sound_popup.children[1].width) / 2, (HEIGHT - allow_sound_popup.children[1].height) / 2);
+            go_button.scale.set(.3);
+            padding = 20;
+            bps = 0;
+            iphone5_coef = 1.5;
+        }
 
         l_arr.scale.set(.25);
         r_arr.scale.set(.25);
@@ -309,7 +308,11 @@
 
             if (name_en !== '') {
                 // build_flight_animation({name_en: name_en});
+                recorder.destroy();
+                recorder = null;
                 location.href = "https://brainrus.ru/" + name_en;
+
+
             } else {
                 build_norec_popup();
                 buttons.map(function (t) {
@@ -826,12 +829,18 @@
             fontSize: 18,
             fill: "white",
         });
-        var txt = new PIXI.Text("ГОВОРИ", ts);
+        var bg = new Sprite(PIXI.Texture.WHITE);
+        bg.width = WIDTH;
+        bg.height = 40;
+        bg.position.set(0,0);
+        bg.tint = 0x1761a4;
+
+        var txt = new PIXI.Text("ГОВОРИТЬ", ts);
 
         g.beginFill(0x1761a4, 1);
         g.drawRect(0, 0, WIDTH, 40);
 
-        wrapper.addChild(g);
+        wrapper.addChild(bg);
         wrapper.addChild(txt);
         app.stage.addChild(wrapper);
         txt.position.set((wrapper.width - txt.width) / 2, (wrapper.height - txt.height) / 2);
@@ -955,7 +964,7 @@
             function(err){
                 console.log(err);
             }
-        )
+        );
 
         // invokeSaveAsDialog(file)
 
